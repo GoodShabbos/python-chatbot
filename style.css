@@ -1,0 +1,50 @@
+/* /* Jeff Chat — plain, handmade styles. */
+/*
+/* body {
+/*   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+/*   max-width: 46em;
+/*   margin: 0 auto;
+/*   padding: 1.5rem 1rem 4rem;
+/*   line-height: 1.55;
+/* }
+/*
+/* h1 { font-size: 1.4rem; margin: 0 0 0.25rem; }
+/*
+/* p { margin: 0.5rem 0; }
+/*
+/* hr {
+/*   border: 0;
+/*   border-top: 1px solid #c9c9c9;
+/*   margin: 1rem 0;
+/* }
+/*
+/* label { display: block; margin-bottom: 0.25rem; }
+/*
+/* textarea {
+/*   font: inherit;
+/*   padding: 0.4rem;
+/*   display: block;
+/* }
+/*
+/* #system-prompt { width: 100%; }
+/*
+/* #conversation { margin: 1.25rem 0; }
+/*
+/* #welcome { font-style: italic; }
+/*
+/* form {
+/*   margin-top: 1rem;
+/*   display: flex;
+/*   gap: 0.5rem;
+/*   align-items: flex-start;
+/* }
+/*
+/* #message-input { flex: 1; }
+/*
+/* button {
+/*   font: inherit;
+/*   padding: 0.45rem 1rem;
+/*   cursor: pointer;
+/* }
+/*
+/* button:disabled { opacity: 0.55; cursor: wait; }

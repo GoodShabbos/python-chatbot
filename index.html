@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jeff Chat</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <h1>Jeff Chat</h1>
+  <p>Powered by {{ model }}. System prompt defaults to system_prompt.txt.</p>
+  <hr>
+
+  <label for="system-prompt">System prompt (leave blank to use the default):</label>
+  <textarea id="system-prompt" name="system-prompt" rows="6" cols="60"
+    placeholder="Optional custom system prompt"></textarea>
+
+  <div id="conversation">
+    <p id="welcome">Hi, I'm Jeff. Send a message to start chatting.</p>
+  </div>
+
+  <form id="chat-form">
+    <textarea id="message-input" name="message" rows="3" cols="60" maxlength="12000"
+      placeholder="Message Jeff..." aria-label="Your message"></textarea>
+    <button id="send-button" type="submit">Send</button>
+  </form>
+
+  <script>
+    const form = document.querySelector("#chat-form");
+    const input = document.querySelector("#message-input");
+    const button = document.querySelector("#send-button");
+    const conversation = document.querySelector("#conversation");
+    const history = [];
+    const systemPromptInput = document.querySelector("#system-prompt");
+
+    const prefixes = { user: "You: ", bot: "Jeff: ", error: "Error: " };
+
+    function addMessage(text, kind) {
+      document.querySelector("#welcome")?.remove();
+      const element = document.createElement("p");
+      element.textContent = (prefixes[kind] || "") + text;
+      conversation.appendChild(element);
+      element.scrollIntoView({ block: "end", behavior: "smooth" });
+      return element;
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const text = input.value.trim();
+      if (!text || button.disabled) return;
+
+      history.push({ role: "user", content: text });
+      addMessage(text, "user");
+      input.value = "";
+      button.disabled = true;
+
+      addMessage("Jeff is thinking...", "pending");
+
+      try {
+        const response = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            messages: history,
+            system_prompt: systemPromptInput.value
+          })
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "The request failed.");
+        }
+
+        history.push({ role: "assistant", content: data.reply });
+        addMessage(data.reply, "bot");
+      } catch (error) {
+        history.pop();
+        addMessage(error.message, "error");
+      } finally {
+        button.disabled = false;
+        input.focus();
+      }
+    });
+
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        form.requestSubmit();
+      }
+    });
+  </script>
+</body>
+</html>
